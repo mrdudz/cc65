@@ -1,22 +1,43 @@
 #! /bin/bash
 
+SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+
 VERBOSE=0
 
+# assume this script lives in BASE_DIR/util
+BASE_DIR=$SCRIPT_DIR/..
 
-INCLUDEDIR=./include/
+#echo SCRIPT_DIR: $SCRIPT_DIR
+#echo BASE_DIR: $BASE_DIR
 
-TMPFILE=test.tmp
-FUNCFILE=test2.tmp
-CALLFILE=test3.tmp
+INCLUDEDIR=$BASE_DIR/include/
+
+CL65=$BASE_DIR/bin/cl65
+CC65=$BASE_DIR/bin/cc65
+
+TARGET=c64
 
 #HEADERFILE=conio.h
 
-ERRFILE=./out.err
-TESTFILE=./tmp.c
-CL65=./bin/cl65
-CC65=./bin/cc65
+# todo: use proper temp files and clean up later
 
-TARGET=c64
+TMPFILE=$SCRIPT_DIR/test.tmp
+FUNCFILE=$SCRIPT_DIR/test2.tmp
+CALLFILE=$SCRIPT_DIR/test3.tmp
+
+ERRFILE=$SCRIPT_DIR/out.err
+TESTFILE=$SCRIPT_DIR/tmp.c
+TESTPRG=$SCRIPT_DIR/tmp.prg
+
+function cleanup
+{
+    rm -f $TMPFILE
+    rm -f $FUNCFILE
+    rm -f $CALLFILE
+    rm -f $ERRFILE
+    rm -f $TESTFILE
+    rm -f $TESTPRG
+}
 
 function checkheader
 {
@@ -170,7 +191,7 @@ do
     echo "}"  >> $TESTFILE
 
 #        cat $TESTFILE
-    $CL65 $CL65OPT $TESTFILE 2> $ERRFILE > /dev/null
+    $CL65 $CL65OPT $TESTFILE -o $TESTPRG 2> $ERRFILE > /dev/null
     ERR=$?
 #        echo err:$ERR
     if [ $ERR != 0 ]; then
@@ -267,7 +288,12 @@ do
     done
     echo -ne "\n"
 done
+
+cleanup
+
 exit
+
+# TODO: make lists/options for the rest of the header files
 
 apple2enh.h
 apple2_filetype.h
