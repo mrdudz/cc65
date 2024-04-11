@@ -156,12 +156,12 @@ enum {
 | otherwise returns 0.
 *----------------------------------------------------------------------------*/
 
-flag float64_is_nan( float64 a )
+flag float64_is_nan( float64 *a )
 {
 
     return
-           ( 0xFFE00000 <= (bits32) ( a.high<<1 ) )
-        && ( a.low || ( a.high & 0x000FFFFF ) );
+           ( 0xFFE00000 <= (bits32) ( a->high<<1 ) )
+        && ( a->low || ( a->high & 0x000FFFFF ) );
 
 }
 
@@ -170,12 +170,12 @@ flag float64_is_nan( float64 a )
 | NaN; otherwise returns 0.
 *----------------------------------------------------------------------------*/
 
-flag float64_is_signaling_nan( float64 a )
+flag float64_is_signaling_nan( float64 *a )
 {
 
     return
-           ( ( ( a.high>>19 ) & 0xFFF ) == 0xFFE )
-        && ( a.low || ( a.high & 0x0007FFFF ) );
+           ( ( ( a->high>>19 ) & 0xFFF ) == 0xFFE )
+        && ( a->low || ( a->high & 0x0007FFFF ) );
 
 }
 
@@ -185,14 +185,12 @@ flag float64_is_signaling_nan( float64 a )
 | exception is raised.
 *----------------------------------------------------------------------------*/
 
-static commonNaNT float64ToCommonNaN( float64 a )
+static void float64ToCommonNaN( commonNaNT *dst, float64 *a )
 {
-    commonNaNT z;
 
     if ( float64_is_signaling_nan( a ) ) float_raise( float_flag_invalid );
-    z.sign = a.high>>31;
-    shortShift64Left( a.high, a.low, 12, &z.high, &z.low );
-    return z;
+    dst->sign = a->high>>31;
+    shortShift64Left( a->high, a->low, 12, &dst->high, &dst->low );
 
 }
 
@@ -201,13 +199,11 @@ static commonNaNT float64ToCommonNaN( float64 a )
 | precision floating-point format.
 *----------------------------------------------------------------------------*/
 
-static float64 commonNaNToFloat64( commonNaNT a )
+static void commonNaNToFloat64( float64 *dst, commonNaNT *a )
 {
-    float64 z;
 
-    shift64Right( a.high, a.low, 12, &z.high, &z.low );
-    z.high |= ( ( (bits32) a.sign )<<31 ) | 0x7FF80000;
-    return z;
+    shift64Right( a->high, a->low, 12, &dst->high, &dst->low );
+    dst->high |= ( ( (bits32) a->sign )<<31 ) | 0x7FF80000;
 
 }
 
@@ -217,22 +213,53 @@ static float64 commonNaNToFloat64( commonNaNT a )
 | signaling NaN, the invalid exception is raised.
 *----------------------------------------------------------------------------*/
 
-static float64 propagateFloat64NaN( float64 a, float64 b )
+static void propagateFloat64NaN( float64 *dst, float64 *a, float64 *b )
 {
     flag aIsNaN, aIsSignalingNaN, bIsNaN, bIsSignalingNaN;
+    float64 a2, b2;
+    a2 = *a;
+    b2 = *b;
 
-    aIsNaN = float64_is_nan( a );
-    aIsSignalingNaN = float64_is_signaling_nan( a );
-    bIsNaN = float64_is_nan( b );
-    bIsSignalingNaN = float64_is_signaling_nan( b );
-    a.high |= 0x00080000;
-    b.high |= 0x00080000;
+    aIsNaN = float64_is_nan( &a2 );
+    aIsSignalingNaN = float64_is_signaling_nan( &a2 );
+    bIsNaN = float64_is_nan( &b2 );
+    bIsSignalingNaN = float64_is_signaling_nan( &b2 );
+    a2.high |= 0x00080000;
+    b2.high |= 0x00080000;
     if ( aIsSignalingNaN | bIsSignalingNaN ) float_raise( float_flag_invalid );
-    if ( aIsNaN ) {
-        return ( aIsSignalingNaN & bIsNaN ) ? b : a;
+    if ( aIsSignalingNaN ) {
+        if ( bIsSignalingNaN ) goto returnLargerSignificand;
+        if ( bIsNaN ) {
+            *dst = b2;
+        } else {
+            *dst = a2;
+        }
+        return;
+    }
+    else if ( aIsNaN ) {
+        if ( bIsSignalingNaN | ! bIsNaN ) {
+            *dst = a2;
+             return;
+        }
+ returnLargerSignificand:
+        if ( lt64( a2.high<<1, a2.low, b2.high<<1, b2.low ) ) {
+            *dst = b2;
+            return;
+        }
+        if ( lt64( b2.high<<1, b2.low, a2.high<<1, a2.low ) ) {
+            *dst = a2;
+            return;
+        }
+
+        if ( a2.high < b2.high )  {
+            *dst = a2;
+        } else { 
+            *dst = b2;
+        }
+        return;
     }
     else {
-        return b;
+        *dst = b2;
     }
 
 }
