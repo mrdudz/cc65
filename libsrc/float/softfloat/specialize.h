@@ -253,7 +253,7 @@ static void propagateFloat64NaN( float64 *dst, float64 *a, float64 *b )
 
         if ( a2.high < b2.high )  {
             *dst = a2;
-        } else { 
+        } else {
             *dst = b2;
         }
         return;
