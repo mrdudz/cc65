@@ -295,7 +295,7 @@ SER_CLOSE:
         bcc     IIgs
 
         lda     #SER_ERR_NO_DEVICE      ; Not a IIgs
-        ldx     #$00                    ; Promote char return value
+        ldx     #>$0000
         rts
 
 IIgs:
@@ -304,8 +304,9 @@ IIgs:
 
         ldx     Channel
 
-        ; Deactivate interrupts
-        sei
+        php                             ; Deactivate interrupts
+        sei                             ; if enabled
+
         ldy     #WR_MASTER_IRQ_RST
         lda     #MASTER_IRQ_SHUTDOWN
         jsr     writeSCCReg
@@ -334,7 +335,7 @@ IIgs:
         ldx     #$00
         stx     Opened                  ; Mark port as closed
 
-        cli
+        plp                             ; Reenable interrupts if needed
 :       txa                             ; Promote char return value
         rts
 
@@ -352,7 +353,8 @@ getClockSource:
 ; Must return an SER_ERR_xx code in a/x.
 
 SER_OPEN:
-        sei
+        php                             ; Deactivate interrupts
+        sei                             ; if enabled
 
         ; Check if the handshake setting is valid
         ldy     #SER_PARAMS::HANDSHAKE  ; Handshake
@@ -497,9 +499,9 @@ BaudOK:
         lda     #SER_ERR_OK
 
 SetupOut:
-        ldx     #$00                    ; Promote char return value
+        plp                             ; Reenable interrupts if needed
+        ldx     #>$0000
         sty     Opened
-        cli
         rts
 
 ;----------------------------------------------------------------------------
@@ -537,7 +539,7 @@ SER_GET:
         rts
 NoData:
         lda     #SER_ERR_NO_DATA
-        ldx     #$00                    ; Promote char return value
+        ldx     #>$0000
         rts
 
 ;----------------------------------------------------------------------------
@@ -558,7 +560,7 @@ SER_PUT:
 :       ldy     SendFreeCnt             ; Do we have room to store byte?
         bne     :+
         lda     #SER_ERR_OVERFLOW
-        ldx     #$00
+        ldx     #>$0000
         rts
 
 :       ldy     SendTail                ; Put byte into send buffer & send
@@ -569,7 +571,7 @@ SER_PUT:
         jsr     TryToSend
         lda     #SER_ERR_OK
         .assert SER_ERR_OK = 0, error
-        tax
+        tax                             ; Promote char return value
         rts
 
 ;----------------------------------------------------------------------------
@@ -606,11 +608,11 @@ SER_IOCTL:
 
         stx     Channel
         .assert SER_ERR_OK = 0, error
-        tax
+        tax                             ; Promote char return value
         rts
 
 :       lda     #SER_ERR_INV_IOCTL
-        ldx     #$00                    ; Promote char return value
+        ldx     #>$0000
         rts
 
 ;----------------------------------------------------------------------------

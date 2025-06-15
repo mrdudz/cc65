@@ -92,7 +92,28 @@ several useful settings:
 
 </descrip><p>
 
+<descrip>
 
+  <tag/Installing your code in the Language Card/
+  The code in the LC segment will automatically be copied from the end of the
+  binary into the Language Card at startup, even if the segment is empty (a
+  0-byte copy). This allows for tighter code. This code will be copied using the
+  Applesoft BLTU2 function that is available starting with the Apple ][+,
+  but not in the original Apple ][ with an Integer BASIC ROM. This shows as
+  a "RANGE ERROR. STOPPING AT ..." message on startup.
+
+  If you want to target the Integer BASIC original Apple ][, you can link in an
+  alternative implementation of the LC segment loading, at the cost of linking
+  in memcpy (60 bytes):
+
+  Using <tt/apple2-integer-basic-compat.o/ is as simple as placing it on the linker
+  command line like this:
+
+  <tscreen><verb>
+  cl65 -t apple2 myprog.c apple2-integer-basic-compat.o
+  </verb></tscreen>
+
+</descrip>
 
 <sect>Linker configurations<label id="link-configs"><p>
 
@@ -289,9 +310,9 @@ the memory from &dollar;800 to &dollar;1FFF can be added to the heap by calling
 
 ProDOS 8 requires for every open file a page-aligned 1 KB I/O buffer. By default
 these buffers are allocated by the cc65 runtime system on the heap using
-<tt/posix_memalign()/. While this is generally the best solution it means quite
-some overhead for (especially rather small) cc65 programs which do open files
-but don't make use of the heap otherwise.
+<url url="funcref.html#posix_memalign" name="posix_memalign()">. While this is
+generally the best solution it means quite some overhead for (especially rather
+small) cc65 programs which do open files but don't make use of the heap otherwise.
 
 The apple2 package comes with the alternative ProDOS 8 I/O buffer allocation
 module <tt/apple2-iobuf-0800.o/ which uses the memory between &dollar;800 and
@@ -332,12 +353,15 @@ usage.
 <item>_datetime
 <item>allow_lowercase
 <item>beep
+<item>dir_entry_count
+<item>get_tv
 <item>get_ostype
 <item>gmtime_dt
 <item>mktime_dt
 <item>rebootafterexit
 <item>ser_apple2_slot
 <item>tgi_apple2_mix
+<item>videomode
 </itemize>
 
 
@@ -382,6 +406,10 @@ The names in the parentheses denote the symbols to be used for static linking of
   hires pages. Note that programs using this driver will have to be linked
   with <tt/-S $4000/ to reserve the first hires page or with <tt/-S $6000/
   to reserve both hires pages.
+
+  Note that the second hires page is only available if the text display is not in
+  80 column mode. This can be asserted by calling <tt/videomode (VIDEOMODE_40COL);/
+  before installing the driver.
 
   The function <tt/tgi_apple2_mix()/ allows to activate 4 lines of text. The
   function doesn't clear the corresponding area at the bottom of the screen.
