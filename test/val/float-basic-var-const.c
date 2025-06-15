@@ -70,7 +70,7 @@ void varconst(void)
     /* subtraction, variable - constant */
     fp1 = 16.25f;
     fp3 = fp1 - 8.5f;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, fp1), _ftostr(buf2, 8.5f), _ftostr(buf3, fp3));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, fp1), _ftostr(buf2, 8.5f), _ftostr(buf3, fp3));
     printf(" fp3:0x%08lx [0x40f80000] %s (exp:7.75)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     test1(fp3, "40f80000");
 
@@ -112,7 +112,7 @@ void varconst2(void)
     /* subtraction, variable - constant */
     fp1 = 16.25f;
     fp1 -= 8.5f;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, 16.25f), _ftostr(buf2, 8.5f), _ftostr(buf3, fp1));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, 16.25f), _ftostr(buf2, 8.5f), _ftostr(buf3, fp1));
     printf(" fp1:0x%08lx [0x40f80000] %s (exp:7.75)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
     test1(fp1, "40f80000");
 
@@ -162,7 +162,7 @@ void varconst3(void)
     /* subtraction, variable - constant */
     localfp1 = 16.25f;
     localfp1 -= 8.5f;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, 16.25f), _ftostr(buf2, 8.5f), _ftostr(buf3, localfp1));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, 16.25f), _ftostr(buf2, 8.5f), _ftostr(buf3, localfp1));
     printf(" localfp1:0x%08lx [0x40f80000] %s (exp:7.75)", *((uint32_t*)&localfp1), _ftostr(buf, localfp1));
     test1(localfp1, "40f80000");
 
@@ -215,7 +215,7 @@ int main(void)
 {
     fp1 = 16.25f;
     fp3 = fp1 - 8.5f;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, fp1), _ftostr(buf2, 8.5f), _ftostr(buf3, fp3));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, fp1), _ftostr(buf2, 8.5f), _ftostr(buf3, fp3));
     printf(" fp3:0x%08lx [0x40f80000] %s (exp:7.75)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     return result;
 }

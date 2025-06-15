@@ -8,6 +8,8 @@
         .import         _fgetc, popptr1, pushptr1, popax, pushax, return0, ___errno
         .importzp       ptr1, ptr4
 
+        .feature        string_escapes
+
         .include        "errno.inc"
         .include        "stdio.inc"
         .include        "_file.inc"
@@ -88,7 +90,7 @@ read_loop:
         bne     :+
         inc     ptr4+1
 
-:       cmp     #$0A            ; Stop at \n
+:       cmp     #'\n'    ; #'\n' should get translated properly
         beq     done
         bne     read_loop
 

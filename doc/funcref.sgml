@@ -97,10 +97,14 @@ function.
 <item>_dos_type
 <item>allow_lowercase
 <item><ref id="beep" name="beep">
+<item><ref id="dir_entry_count" name="dir_entry_count">
+<item><ref id="get_tv" name="get_tv">
 <item><ref id="get_ostype" name="get_ostype">
 <item><ref id="gmtime_dt" name="gmtime_dt">
 <item><ref id="mktime_dt" name="mktime_dt">
 <item>rebootafterexit
+<item><ref id="videomode" name="videomode">
+<item><ref id="waitvsync" name="waitvsync">
 </itemize>
 
 
@@ -109,11 +113,14 @@ function.
 <itemize>
 <item>_dos_type
 <item><ref id="beep" name="beep">
+<item><ref id="dir_entry_count" name="dir_entry_count">
+<item><ref id="get_tv" name="get_tv">
 <item><ref id="get_ostype" name="get_ostype">
 <item><ref id="gmtime_dt" name="gmtime_dt">
 <item><ref id="mktime_dt" name="mktime_dt">
 <item>rebootafterexit
 <item><ref id="videomode" name="videomode">
+<item><ref id="waitvsync" name="waitvsync">
 </itemize>
 
 
@@ -138,7 +145,7 @@ function.
 <!-- <item><ref id="_setcolor_low" name="_setcolor_low"> -->
 <item><ref id="_sound" name="_sound">
 <item><ref id="get_ostype" name="get_ostype">
-<!-- <item><ref id="get_tv" name="get_tv"> -->
+<item><ref id="get_tv" name="get_tv">
 </itemize>
 
 (incomplete)
@@ -225,7 +232,7 @@ function.
 <!-- <item><ref id="cbm_readdir" name="cbm_readdir"> -->
 <!-- <item><ref id="cbm_save" name="cbm_save"> -->
 <!-- <item><ref id="cbm_write" name="cbm_write"> -->
-<!-- <item><ref id="get_tv" name="get_tv"> -->
+<item><ref id="get_tv" name="get_tv">
 <item><ref id="kbrepeat" name="kbrepeat">
 <item><ref id="waitvsync" name="waitvsync">
 </itemize>
@@ -346,7 +353,7 @@ function.
 <itemize>
 <!-- <item><ref id="get_numbanks" name="get_numbanks"> -->
 <item><ref id="get_ostype" name="get_ostype">
-<!-- <item><ref id="get_tv" name="get_tv"> -->
+<item><ref id="get_tv" name="get_tv">
 <!-- <item><ref id="set_tv" name="set_tv"> -->
 <!-- <item><ref id="vera_layer_enable" name="vera_layer_enable"> -->
 <!-- <item><ref id="vera_sprites_enable" name="vera_sprites_enable"> -->
@@ -441,7 +448,7 @@ see also <tt>testcode/lib/em-test.c</tt> and <tt>samples/multidemo.c</tt>.
 <sect1><tt/gamate.h/<label id="gamate.h"><p>
 
 <itemize>
-<!-- <item><ref id="get_tv" name="get_tv"> -->
+<item><ref id="get_tv" name="get_tv">
 <item><ref id="waitvsync" name="waitvsync">
 </itemize>
 
@@ -517,6 +524,14 @@ see also <tt>testcode/lib/em-test.c</tt> and <tt>samples/multidemo.c</tt>.
 </itemize>
 
 
+<sect1><tt/lzsa.h/<label id="lzsa.h"><p>
+
+<itemize>
+<item><ref id="decompress_lzsa1" name="decompress_lzsa1">
+<item><ref id="decompress_lzsa2" name="decompress_lzsa2">
+</itemize>
+
+
 <sect1><tt/modload.h/<label id="modload.h"><p>
 
 <itemize>
@@ -548,7 +563,7 @@ see also <tt>testcode/lib/em-test.c</tt> and <tt>samples/multidemo.c</tt>.
 <sect1><tt/nes.h/<label id="nes.h"><p>
 
 <itemize>
-<!-- <item><ref id="get_tv" name="get_tv"> -->
+<item><ref id="get_tv" name="get_tv">
 <item><ref id="waitvsync" name="waitvsync">
 </itemize>
 
@@ -566,7 +581,7 @@ It does not declare any functions.
 <sect1><tt/pce.h/<label id="pce.h"><p>
 
 <itemize>
-<!-- <item><ref id="get_tv" name="get_tv"> -->
+<item><ref id="get_tv" name="get_tv">
 <item><ref id="waitvsync" name="waitvsync">
 </itemize>
 
@@ -736,7 +751,7 @@ communication, see also <tt>testcode/lib/ser-test.c</tt>.
 <item><ref id="ltoa" name="ltoa">
 <item><ref id="malloc" name="malloc">
 <item><ref id="perror" name="perror">
-<!-- <item><ref id="posix_memalign" name="posix_memalign"> -->
+<item><ref id="posix_memalign" name="posix_memalign">
 <!-- <item><ref id="putenv" name="putenv"> -->
 <item><ref id="qsort" name="qsort">
 <item><ref id="rand" name="rand">
@@ -887,6 +902,13 @@ communication, see also <tt>testcode/lib/ser-test.c</tt>.
 <!-- </itemize> -->
 
 (incomplete)
+
+
+<sect1><tt/zx02.h/<label id="zx02.h"><p>
+
+<itemize>
+<item><ref id="decompress_zx02" name="decompress_zx02">
+</itemize>
 
 
 <sect>Alphabetical function reference<p>
@@ -2434,7 +2456,7 @@ the address must first be ORed with $60.
 <tag/Availability/cc65
 <tag/See also/
 <ref id="cbm_k_listen" name="cbm_k_listen">
-<tag/Exampe/None.
+<tag/Example/None.
 </descrip>
 </quote>
 
@@ -3377,6 +3399,70 @@ used in presence of a prototype.
 <tag/Description/<tt/decompress_lz4/ uncompresses a LZ4-compressed buffer.
 <tag/Notes/<itemize>
 <item>Use LZ4_compress_HC with compression level 16 for best compression.
+<item>Your program will need to know the uncompressed size of the buffer as
+there is no end-of-stream marker.
+<item>LZ4 is the biggest and second-slowest decompressor shipped in cc65 runtime.
+It is also the least efficient compression algorithm.
+</itemize>
+<tag/Availability/cc65
+<tag/Example/None.
+</descrip>
+</quote>
+
+
+<sect1>decompress_lzsa1<label id="decompress_lzsa1"><p>
+
+<quote>
+<descrip>
+<tag/Function/Uncompress a LZSA buffer with format 1.
+<tag/Header/<tt/<ref id="lzsa.h" name="lzsa.h">/
+<tag/Declaration/<tt/void decompress_lzsa1 (const unsigned char* src, unsigned char* const dst);/
+<tag/Description/<tt/decompress_lz4/ uncompresses a LZSA buffer with format 1.
+<tag/Notes/<itemize>
+<item>Use <tt/lzsa -f 1 -r input.bin output.lzsa1/ to compress your input.
+<item>The project and compressor can be found at <url url="https://github.com/emmanuel-marty/lzsa">
+<item>LZSA1 is the fastest decompressor shipped in cc65 runtime, but data is less
+compressed than with LZSA2 and ZX02.
+</itemize>
+<tag/Availability/cc65
+<tag/Example/None.
+</descrip>
+</quote>
+
+
+<sect1>decompress_lzsa2<label id="decompress_lzsa2"><p>
+
+<quote>
+<descrip>
+<tag/Function/Uncompress a LZSA buffer with format 2.
+<tag/Header/<tt/<ref id="lzsa.h" name="lzsa.h">/
+<tag/Declaration/<tt/void decompress_lzsa2 (const unsigned char* src, unsigned char* const dst);/
+<tag/Description/<tt/decompress_lz4/ uncompresses a LZSA buffer with format 2.
+<tag/Notes/<itemize>
+<item>Use <tt/lzsa -f 2 -r input.bin output.lzsa2/ to compress your input.
+<item>The project and compressor can be found at <url url="https://github.com/emmanuel-marty/lzsa">
+<item>LZSA2 is the second fastest decompressor shipped in cc65 runtime, but data is less
+compressed than with ZX02.
+</itemize>
+<tag/Availability/cc65
+<tag/Example/None.
+</descrip>
+</quote>
+
+
+<sect1>decompress_zx02<label id="decompress_zx02"><p>
+
+<quote>
+<descrip>
+<tag/Function/Uncompress a ZX02 buffer.
+<tag/Header/<tt/<ref id="zx02.h" name="zx02.h">/
+<tag/Declaration/<tt/void decompress_zx02 (const unsigned char* src, unsigned char* const dst);/
+<tag/Description/<tt/decompress_zx02/ uncompresses a ZX02 buffer with format 2.
+<tag/Notes/<itemize>
+<item>Use <tt/zx02 input.bin output.zx02/ to compress your input.
+<item>The project and compressor can be found at <url url="https://github.com/dmsc/zx02">
+<item>ZX02 is the slowest decompressor shipped with cc65 runtime, but is also the
+smallest and has the best compression ratio.
 </itemize>
 <tag/Availability/cc65
 <tag/Example/None.
@@ -3519,6 +3605,25 @@ used in presence of a prototype.
 <tag/See also/
 <ref id="get_turbomaster_speed" name="get_turbomaster_speed">,
 <ref id="set_turbomaster_speed" name="set_turbomaster_speed">,
+<tag/Example/None.
+</descrip>
+</quote>
+
+
+<sect1>dir_entry_count<label id="dir_entry_count"><p>
+
+<quote>
+<descrip>
+<tag/Function/Returns the number of entries in the directory.
+<tag/Header/<tt/<ref id="apple2.h" name="apple2.h">/
+<tag/Declaration/<tt/unsigned int __fastcall__ dir_entry_count(DIR *dir);/
+<tag/Description/<tt/dir_entry_count/ is machine dependent and does not exist for
+all supported targets. If it exists, it returns the number of active
+(non-deleted) files and directories in the directory.
+<tag/Notes/<itemize>
+<item>The function does not exist on all platforms.
+</itemize>
+<tag/Availability/cc65 (not all platforms)
 <tag/Example/None.
 </descrip>
 </quote>
@@ -4082,6 +4187,31 @@ be used in presence of a prototype.
 <ref id="calloc" name="calloc">,
 <ref id="malloc" name="malloc">,
 <ref id="realloc" name="realloc">
+<tag/Example/None.
+</descrip>
+</quote>
+
+
+<sect1>get_tv<label id="get_tv"><p>
+
+<quote>
+<descrip>
+<tag/Function/The function returns the system's vertical blank frequency.
+<tag/Header/<tt/<ref id="apple2.h" name="apple2.h">,
+<ref id="atari.h" name="atari.h">, <ref id="cbm.h" name="cbm.h">,
+<ref id="cx16.h" name="cx16.h">, <ref id="gamate.h" name="gamate.h">,
+<ref id="nes.h" name="nes.h">, <ref id="pce.h" name="pce.h">/
+<tag/Declaration/<tt/unsigned char get_tv (void);/
+<tag/Description/<tt/get_tv/ is machine dependent and does not exist for
+all supported targets. If it exists, it returns a number that identifies the
+frequency at which the screen vertical blank happens (either 50 or 60Hz),
+if possible.
+<tag/Notes/<itemize>
+<item>The function does not exist on all platforms.
+<item>Return TV_NTSC for 60Hz systems, TV_PAL for 50Hz systems, or
+TV_OTHER if the scan frequency can not be determined.
+</itemize>
+<tag/Availability/cc65 (not all platforms)
 <tag/Example/None.
 </descrip>
 </quote>
@@ -6202,6 +6332,32 @@ be used in presence of a prototype.
 </quote>
 
 
+<sect1>posix_memalign<label id="posix_memalign"><p>
+
+<quote>
+<descrip>
+<tag/Function/Allocate aligned dynamic memory.
+<tag/Header/<tt/<ref id="stdlib.h" name="stdlib.h">/
+<tag/Declaration/<tt/int __fastcall__ posix_memalign (void** memptr, size_t alignment, size_t size);/
+<tag/Description/Allocate a block of memory with the given "size", which is aligned to a
+memory address that is a multiple of "alignment".  "alignment" <em/must not/ be
+zero, and <em/must/ be a power of two; otherwise, this function will return
+EINVAL.  The function returns ENOMEM if not enough memory is available
+to satisfy the request.  "memptr" must point to a variable; that variable
+will return the address of the allocated memory.  Use free() to release that
+allocated block.
+<tag/Notes/<itemize>
+<item>The function is only available as fastcall function, so it may only
+be used in presence of a prototype.
+</itemize>
+<tag/Availability/POSIX 1003.1
+<tag/See also/
+<ref id="free" name="free">
+<tag/Example/None.
+</descrip>
+</quote>
+
+
 <sect1>psg_delay<label id="psg_delay"><p>
 
 <quote>
@@ -7294,7 +7450,7 @@ if (stat (FILENAME, &amp;stbuf) == 0) {
 <tag/Function/Get filesystem statistics.
 <tag/Header/<tt/<ref id="sys/statvfs.h" name="sys/statvfs.h">/
 <tag/Declaration/<tt/int __fastcall__ statvfs (const char* pathname, struct statvfs* buf);/
-<tag/Description/<tt/statvfs/ gets information for the filesytem on which the given file
+<tag/Description/<tt/statvfs/ gets information for the filesystem on which the given file
 resides. On success,
 zero is returned. On error, -1 is returned and <tt/errno/ is set to an error
 code describing the reason for the failure.
@@ -8324,24 +8480,27 @@ used in presence of a prototype.
 <tag/Function/Switch to either 40- or 80-column text mode, or a standard
 graphics mode.
 <tag/Header/<tt/
+<ref id="apple2.h" name="apple2.h">,
 <ref id="apple2enh.h" name="apple2enh.h">,
 <ref id="c128.h" name="c128.h">,
 <ref id="cx16.h" name="cx16.h">/
 <tag/Declaration/
-<tt>unsigned __fastcall__ videomode (unsigned Mode); /* for apple2enh and c128 */</tt><newline>
-<tt>signed char __fastcall__ videomode (signed char Mode); /* for cx16 */</tt>
+<tt>unsigned __fastcall__ videomode (unsigned Mode); /* for c128 */</tt><newline>
+<tt>signed char __fastcall__ videomode (signed char Mode); /* for apple2 and cx16 */</tt>
 <tag/Description/Switch to a 40- or 80-column text or graphics mode, depending
 on the argument. If the requested mode is already active, nothing happens. The
 old mode is returned from the call.
 <tag/Notes/<itemize>
-<item>The function is specific to the Commodore 128, the enhanced Apple //e,
+<item>The function is specific to the Commodore 128, the Apple II,
 and the Commander X16.
 <item>This function replaces <ref id="toggle_videomode"
 name="toggle_videomode">.
 <item>The function is available as only a fastcall function, so it may be used
 only in the presence of a prototype.
+<item>On Apple II, this functions returns the previously active video mode, or -1
+if the mode is not supported due to lack of hardware.
 </itemize>
-<tag/Availability/C128, enhanced Apple //e, and CX16
+<tag/Availability/C128, Apple II, and CX16
 <tag/See also/
 <ref id="fast" name="fast">,
 <ref id="isfast" name="isfast">,
@@ -8359,13 +8518,19 @@ only in the presence of a prototype.
 <descrip>
 <tag/Function/Wait until the start of the next video frame.
 <tag/Header/<tt/
+<ref id="apple2.h" name="apple2.h">,
 <ref id="atmos.h" name="atmos.h">,
 <ref id="cbm.h" name="cbm.h">,
 <ref id="gamate.h" name="gamate.h">,
 <ref id="nes.h" name="nes.h">,
 <ref id="pce.h" name="pce.h">/
-<tag/Declaration/<tt/void waitvsync (void);/
+<tag/Declaration/
+<tt>void waitvsync (void);</tt><newline>
 <tag/Description/Wait for vertical sync, to reduce flickering.
+<tag/Notes/<itemize>
+<item>The function will silently fail when the feature is not
+supported, like on the Apple&nbsp;&rsqb;&lsqb;+.
+</itemize>
 <tag/Availability/Platforms served by the headers above
 (Atmos requires the VSync hack)
 <tag/Example/None.

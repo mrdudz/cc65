@@ -66,7 +66,7 @@ void constintvar(void)
 
     var_sint = 16;
     fp3 =  18.5f - var_sint;
-    printf("substraction: %s-%d=%s\n", _ftostr(buf, 8.5f), var_sint, _ftostr(buf3, fp3));
+    printf("subtraction: %s-%d=%s\n", _ftostr(buf, 8.5f), var_sint, _ftostr(buf3, fp3));
     printf(" fp3:0x%08lx [0x40200000] %s (2.5)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     test1(fp3, "40200000");
     var_sint = 13;

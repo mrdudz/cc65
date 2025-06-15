@@ -85,11 +85,13 @@ enum {
 };
 
 /* Token table */
+/* CAUTION: table must be sorted for bsearch */
 static const struct Keyword {
     char*           Key;        /* Keyword name */
     unsigned char   Tok;        /* The token */
     unsigned char   Std;        /* Token supported in which standards? */
 } Keywords [] = {
+/* BEGIN SORTED.SH */
     { "_Pragma",        TOK_PRAGMA,     TT_C89 | TT_C99 | TT_CC65  },   /* !! */
     { "_Static_assert", TOK_STATIC_ASSERT,                TT_CC65  },   /* C11 */
     { "__AX__",         TOK_AX,         TT_C89 | TT_C99 | TT_CC65  },
@@ -143,6 +145,7 @@ static const struct Keyword {
     { "void",           TOK_VOID,       TT_C89 | TT_C99 | TT_CC65  },
     { "volatile",       TOK_VOLATILE,   TT_C89 | TT_C99 | TT_CC65  },
     { "while",          TOK_WHILE,      TT_C89 | TT_C99 | TT_CC65  },
+/* END SORTED.SH */
 };
 #define KEY_COUNT       (sizeof (Keywords) / sizeof (Keywords [0]))
 
@@ -160,6 +163,12 @@ static const struct Keyword {
 */
 typedef uint32_t scan_t;
 
+
+/* ParseChar return values */
+typedef struct {
+    int Val;
+    int Cooked;
+} parsedchar_t;
 
 /*****************************************************************************/
 /*                                   code                                    */
@@ -324,12 +333,15 @@ static void SetTok (int tok)
 
 
 
-static int ParseChar (void)
+static parsedchar_t ParseChar (void)
 /* Parse a character token. Converts escape chars into character codes. */
 {
+    parsedchar_t Result;
     int C;
     int HadError;
     int Count;
+
+    Result.Cooked = 1;
 
     /* Check for escape chars */
     if (CurC == '\\') {
@@ -343,6 +355,14 @@ static int ParseChar (void)
                 break;
             case 'b':
                 C = '\b';
+                break;
+            case 'e':
+                if (IS_Get(&Standard) != STD_CC65) {
+                    goto IllegalEscape;
+                }
+                /* we'd like to use \e here, but */
+                /* not all build systems support it */
+                C = '\x1B';
                 break;
             case 'f':
                 C = '\f';
@@ -371,6 +391,7 @@ static int ParseChar (void)
             case 'x':
             case 'X':
                 /* Hex character constant */
+                Result.Cooked = 0;
                 if (!IsXDigit (NextC)) {
                     Error ("\\x used with no following hex digits");
                     C = ' ';
@@ -399,6 +420,7 @@ static int ParseChar (void)
             case '6':
             case '7':
                 /* Octal constant */
+                Result.Cooked = 0;
                 Count = 1;
                 C = HexVal (CurC);
                 while (IsODigit (NextC) && Count++ < 3) {
@@ -409,6 +431,7 @@ static int ParseChar (void)
                     Error ("Octal character constant out of range");
                 break;
             default:
+IllegalEscape:
                 C = CurC;
                 Error ("Illegal escaped character: 0x%02X", CurC);
                 break;
@@ -421,7 +444,12 @@ static int ParseChar (void)
     NextChar ();
 
     /* Do correct sign extension */
-    return SignExtendChar (C);
+    Result.Val = SignExtendChar(C);
+    if (Result.Cooked) {
+        Result.Cooked = Result.Val;
+    }
+
+    return Result;
 }
 
 
@@ -429,7 +457,7 @@ static int ParseChar (void)
 static void CharConst (void)
 /* Parse a character constant token */
 {
-    int C;
+    parsedchar_t C;
 
     if (CurC == 'L') {
         /* Wide character constant */
@@ -455,7 +483,8 @@ static void CharConst (void)
     }
 
     /* Translate into target charset */
-    NextTok.IVal = SignExtendChar (C);
+    NextTok.IVal = SignExtendChar (C.Val);
+    NextTok.Cooked = C.Cooked;
 
     /* Character constants have type int */
     NextTok.Type = type_int;
@@ -466,6 +495,9 @@ static void CharConst (void)
 static void StringConst (void)
 /* Parse a quoted string token */
 {
+    /* result from ParseChar */
+    parsedchar_t ParsedChar;
+
     /* String buffer */
     StrBuf S = AUTO_STRBUF_INITIALIZER;
 
@@ -492,7 +524,8 @@ static void StringConst (void)
             Error ("Unexpected newline");
             break;
         }
-        SB_AppendChar (&S, ParseChar ());
+        ParsedChar = ParseChar ();
+        SB_AppendCharCooked(&S, ParsedChar.Val, ParsedChar.Cooked);
     }
 
     /* Skip closing quote char if there was one */
@@ -687,6 +720,7 @@ static void NumericConst (void)
 
         /* Set the value and the token */
         NextTok.IVal = IVal;
+        NextTok.Cooked = 0;
         NextTok.Tok  = TOK_ICONST;
 
     } else {
@@ -803,7 +837,12 @@ static void GetNextInputToken (void)
         if (NextTok.Tok == TOK_SCONST || NextTok.Tok == TOK_WCSCONST) {
             TranslateLiteral (NextTok.SVal);
         } else if (NextTok.Tok == TOK_CCONST || NextTok.Tok == TOK_WCCONST) {
-            NextTok.IVal = SignExtendChar (TgtTranslateChar (NextTok.IVal));
+            if (NextTok.Cooked) {
+                NextTok.IVal = SignExtendChar (TgtTranslateChar (NextTok.IVal));
+            }
+            else {
+                NextTok.IVal = SignExtendChar (NextTok.IVal);
+            }
         }
     }
 

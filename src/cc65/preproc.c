@@ -216,10 +216,12 @@ typedef enum {
 
 
 /* Preprocessor directive tokens mapping table */
+/* CAUTION: table must be sorted for bsearch */
 static const struct PPDType {
     const char*     Tok;        /* Token */
     ppdirective_t   Type;       /* Type */
 } PPDTypes[] = {
+/* BEGIN SORTED.SH */
     {   "define",       PPD_DEFINE      },
     {   "elif",         PPD_ELIF        },
     {   "else",         PPD_ELSE        },
@@ -233,6 +235,7 @@ static const struct PPDType {
     {   "pragma",       PPD_PRAGMA      },
     {   "undef",        PPD_UNDEF       },
     {   "warning",      PPD_WARNING     },
+/* END SORTED.SH */
 };
 
 /* Number of preprocessor directive types */
@@ -2640,6 +2643,19 @@ static void DoDefine (void)
             goto Error_Handler;
         }
         NextChar ();
+
+    } else {
+
+        /* Object like macro. Check ISO/IEC 9899:1999 (E) 6.10.3p3:
+        ** "There shall be white-space between the identifier and the
+        ** replacement list in the definition of an object-like macro."
+        ** Note: C89 doesn't have this constraint.
+        ** Note: if there is no replacement list, a space is not required.
+        */
+        if (Std == STD_C99 && !IsSpace (CurC) && CurC != 0) {
+            PPWarning ("ISO C99 requires whitespace after the macro name");
+        }
+
     }
 
     /* Remove whitespace and comments from the line, store the preprocessed
@@ -2913,7 +2929,7 @@ static unsigned GetLineDirectiveNum (void)
 
     /* Ensure the buffer is terminated with a '\0' */
     SB_Terminate (&Buf);
-    if (SkipWhitespace (0) != 0 || CurC == '\0') {
+    if (SB_GetLen (&Buf) > 0) {
         const char* Str = SB_GetConstBuf (&Buf);
         if (Str[0] == '\0') {
             PPWarning ("#line directive interprets number as decimal, not octal");
@@ -2929,9 +2945,10 @@ static unsigned GetLineDirectiveNum (void)
             }
         }
     } else {
-        PPError ("#line directive requires a simple decimal digit sequence");
+        PPError ("#line directive requires a decimal digit sequence");
         ClearLine ();
     }
+    SkipWhitespace (0);
 
     /* Done with the buffer */
     SB_Done (&Buf);

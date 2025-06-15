@@ -69,7 +69,7 @@ void constconst(void)
     printf("fp3:0x%08lx [0x3e99999a] %s (0.3)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     test1(fp3, "3e99999a");
 
-    // substraction
+    // subtraction
     printf("\nconstant - constant\n\n");
     fp1 = 0.1f;
     fp2 = 0.2f;

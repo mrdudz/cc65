@@ -158,6 +158,11 @@ DIRLIST = tutorial geos atari2600 atari5200 apple2 gamate lynx supervision sym1 
 
 # --------------------------------------------------------------------------
 # Lists of executables
+EXELIST_agat =     \
+        ascii      \
+        checkversion \
+        hello      \
+        sieve
 
 EXELIST_apple2 =   \
         ascii      \
@@ -416,6 +421,7 @@ all:
 # --------------------------------------------------------------------------
 # List of every supported platform
 TARGETS :=     \
+  agat         \
   apple2       \
   apple2enh    \
   atari        \
@@ -604,6 +610,11 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(samplesdir)/cbm
 	$(INSTALL) -d $(DESTDIR)$(samplesdir)/gamate
 	$(INSTALL) -d $(DESTDIR)$(samplesdir)/supervision
+	$(INSTALL) -d $(DESTDIR)$(samplesdir)/disasm
+	$(INSTALL) -d $(DESTDIR)$(samplesdir)/kim1
+	$(INSTALL) -d $(DESTDIR)$(samplesdir)/lynx
+	$(INSTALL) -d $(DESTDIR)$(samplesdir)/sim65
+	$(INSTALL) -d $(DESTDIR)$(samplesdir)/sym1
 	$(INSTALL) -m0644 *.* $(DESTDIR)$(samplesdir)
 	$(INSTALL) -m0644 readme.txt $(DESTDIR)$(samplesdir)
 	$(INSTALL) -m0644 Makefile $(DESTDIR)$(samplesdir)
@@ -615,6 +626,11 @@ install:
 	$(INSTALL) -m0644 cbm/*.* $(DESTDIR)$(samplesdir)/cbm
 	$(INSTALL) -m0644 gamate/*.* $(DESTDIR)$(samplesdir)/gamate
 	$(INSTALL) -m0644 supervision/*.* $(DESTDIR)$(samplesdir)/supervision
+	$(INSTALL) -m0644 disasm/*.* $(DESTDIR)$(samplesdir)/disasm
+	$(INSTALL) -m0644 kim1/*.* $(DESTDIR)$(samplesdir)/kim1
+	$(INSTALL) -m0644 lynx/*.* $(DESTDIR)$(samplesdir)/lynx
+	$(INSTALL) -m0644 sim65/*.* $(DESTDIR)$(samplesdir)/sim65
+	$(INSTALL) -m0644 sym1/*.* $(DESTDIR)$(samplesdir)/sym1
 
 # --------------------------------------------------------------------------
 # Packaging rules

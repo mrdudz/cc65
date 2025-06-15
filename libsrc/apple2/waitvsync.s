@@ -3,18 +3,26 @@
 ;
 ; void waitvsync (void);
 ;
-        .ifdef  __APPLE2ENH__
-
         .export         _waitvsync
         .import         ostype
+
+        .ifndef  __APPLE2ENH__
+        .import         machinetype
+        .endif
 
         .include        "apple2.inc"
 
 _waitvsync:
+        .ifndef  __APPLE2ENH__
+        bit     machinetype     ; IIe/enh?
+        bpl     out             ; No, silently fail
+        .endif
+
         bit     ostype
         bmi     iigs            ; $8x
         bvs     iic             ; $4x
 
+        ; Apple IIe
 :       bit     RDVBLBAR
         bpl     :-              ; Blanking
 :       bit     RDVBLBAR
@@ -29,7 +37,8 @@ iigs:   bit     RDVBLBAR
         rts
 
         ; Apple IIc TechNote #9, Detecting VBL
-iic:    sei
+iic:    php
+        sei
         sta     IOUDISOFF
         lda     RDVBLMSK
         bit     ENVBL
@@ -40,7 +49,5 @@ iic:    sei
         bcs     :+              ; VBL interrupts were already enabled
         bit     DISVBL
 :       sta     IOUDISON        ; IIc Tech Ref Man: The firmware normally leaves IOUDIS on.
-        cli
-        rts
-
-        .endif                  ; __APPLE2ENH__
+        plp
+out:    rts
