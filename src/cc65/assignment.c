@@ -678,6 +678,15 @@ void OpAddSubAssign (const GenDesc* Gen, ExprDesc *Expr, const char* Op)
     unsigned rflags;
     int      MustScale;
 
+    /* floats aren't involved in this other stuff, let's punt them to
+    ** OpAssign
+    */
+    if (IsTypeFloat (Expr->Type)) {
+        OpAssign(Gen, Expr, Op);
+        return;
+        /* TODO FIX: remove anything float related below */
+    }
+
     /* We currently only handle non-bit-fields in some addressing modes here */
     if (IsTypeBitField (Expr->Type) || ED_IsLocPrimaryOrExpr (Expr)) {
         /* Use generic routine instead */
@@ -765,14 +774,18 @@ void OpAddSubAssign (const GenDesc* Gen, ExprDesc *Expr, const char* Op)
             if (IsClassFloat (Expr->Type)) {
                 /* FIXME: what about the case when expr2 is NOT float? */
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqstatic (lflags, Expr->Name, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 } else {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqstatic (lflags, Expr->Name, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 }
             } else {
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqstatic (lflags, Expr->Name, Expr->IVal, Expr2.IVal);
                 } else {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqstatic (lflags, Expr->Name, Expr->IVal, Expr2.IVal);
                 }
             }
@@ -782,14 +795,18 @@ void OpAddSubAssign (const GenDesc* Gen, ExprDesc *Expr, const char* Op)
             /* Value on the stack */
             if (IsClassFloat (Expr->Type)) {
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqlocal (lflags, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 } else {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqlocal (lflags, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 }
             } else {
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqlocal (lflags, Expr->IVal, Expr2.IVal);
                 } else {
+fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqlocal (lflags, Expr->IVal, Expr2.IVal);
                 }
             }
