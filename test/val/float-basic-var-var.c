@@ -57,9 +57,7 @@ void test1(float f, char *str)
 
 void varvar(void)
 {
-    printf("\n");
-    printf("%s:%d\n", __FILE__, __LINE__);
-    printf("variable vs variable\n\n");
+    printf("\nvariable vs variable\n\n");
 
     /* addition, variable + variable */
     fp1 = 16.5f;
@@ -106,11 +104,9 @@ void varvar(void)
 
 void varvar2(void)
 {
-    printf("\n");
-    printf("%s:%d\n", __FILE__, __LINE__);
-    printf("variable vs variable\n\n");
+    printf("\nvariable vs variable\n\n");
 
-#if 1 // compiles, but wrong result
+#if 0 // compiles, but wrong result
     /* addition, variable + variable */
     fp1 = 16.5f;
     fp2 = 64.25f;
@@ -119,7 +115,7 @@ void varvar2(void)
     printf(" fp1:0x%08lx [0x42a18000] %s (exp:80.75)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
     test1(fp1, "42a18000");
 #endif
-#if 1 // compiles, but wrong result
+#if 0 // compiles, but wrong result
     /* subtraction, variable - variable */
     fp1 = 64.25f;
     fp2 = 16.5f;
@@ -128,21 +124,18 @@ void varvar2(void)
     printf(" fp1:0x%08lx [0x423f0000] %s (exp:47.75)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
     test1(fp1, "423f0000");
 
-    printf("%s:%d\n", __FILE__, __LINE__);
     fp1 = 0.3f;
     fp2 = 0.1f;
     fp1 -= fp2;
     printf("fp1:0x%08lx [0x3e4cccce] %s (0.2)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
     test1(fp1, "3e4cccce");
 
-    printf("%s:%d\n", __FILE__, __LINE__);
     fp1 = 0.1f;
     fp2 = 0.1f;
     fp1 -= fp2;
-    printf("fp1:0x%08lx [0xbe4cccce] %s (0.0)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
-    test1(fp1, "00000000");
+    printf("fp1:0x%08lx [0xbe4cccce] %s (-0.2)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
+    test1(fp1, "be4cccce");
 #endif
-    printf("%s:%d\n", __FILE__, __LINE__);
     /* multiplication, variable * variable */
     fp1 = 8.5f;
     fp2 = 2.25f;

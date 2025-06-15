@@ -3900,7 +3900,7 @@ void g_inc (unsigned flags, unsigned long val)
             }
             break;
 
-        /* FIXME: float (how ???) */
+        /* FIXME: float */
         case CF_FLOAT:
             g_add (flags | CF_CONST, val);
             break;
