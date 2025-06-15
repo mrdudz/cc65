@@ -774,18 +774,14 @@ void OpAddSubAssign (const GenDesc* Gen, ExprDesc *Expr, const char* Op)
             if (IsClassFloat (Expr->Type)) {
                 /* FIXME: what about the case when expr2 is NOT float? */
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqstatic (lflags, Expr->Name, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqstatic (lflags, Expr->Name, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 }
             } else {
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqstatic (lflags, Expr->Name, Expr->IVal, Expr2.IVal);
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqstatic (lflags, Expr->Name, Expr->IVal, Expr2.IVal);
                 }
             }
@@ -795,18 +791,14 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
             /* Value on the stack */
             if (IsClassFloat (Expr->Type)) {
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqlocal (lflags, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqlocal (lflags, Expr->IVal, FP_D_As32bitRaw(Expr2.V.FVal));
                 }
             } else {
                 if (Gen->Tok == TOK_PLUS_ASSIGN) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_addeqlocal (lflags, Expr->IVal, Expr2.IVal);
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_subeqlocal (lflags, Expr->IVal, Expr2.IVal);
                 }
             }

@@ -1929,7 +1929,6 @@ static void UnaryOp (ExprDesc* Expr)
             switch (Tok) {
                 case TOK_MINUS: Expr->V.FVal = FP_D_Sub(FP_D_Make(0.0),Expr->V.FVal);               break;
                 case TOK_PLUS:                                                                      break;
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 case TOK_COMP:  Error ("Unary ~ operator not valid for floating point constant");   break;
                 default:        Internal ("Unexpected token: %d", Tok);
             }
@@ -1943,7 +1942,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
             switch (Tok) {
                 case TOK_MINUS: Expr->IVal = -Expr->IVal;   break;
                 case TOK_PLUS:                              break;
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 case TOK_COMP:  Expr->IVal = ~Expr->IVal;   break;
                 default:        Internal ("Unexpected token: %d", Tok);
             }
@@ -1981,7 +1979,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         switch (Tok) {
             case TOK_MINUS: g_neg (Flags);  break;
             case TOK_PLUS:                  break;
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
             case TOK_COMP:  g_com (Flags);  break;
             default:        Internal ("Unexpected token: %d", Tok);
         }
@@ -2009,7 +2006,6 @@ void hie10 (ExprDesc* Expr)
             break;
 
         case TOK_PLUS:
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         case TOK_MINUS:
         case TOK_COMP:
             /* FIXME: whats with floats? */
@@ -3045,7 +3041,6 @@ static void parseadd (ExprDesc* Expr, int DoArrayRef)
     int rscale;
     int AddDone;                /* No need to generate runtime code */
 
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
     ED_Init (&Expr2);
     Expr2.Flags |= Expr->Flags & E_MASK_KEEP_SUBEXPR;
 
@@ -3073,7 +3068,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
     */
     if (ED_IsQuasiConst (Expr)) {
 
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         /* The left hand side is a constant of some sort. Good. Get rhs */
         ExprWithCheck (DoArrayRef ? hie0 : hie9, &Expr2);
 
@@ -3115,7 +3109,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
             }
 
             if (!AddDone) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Do constant calculation if we can */
                 if (!DoArrayRef && IsClassFloat (lhst) && IsClassFloat (rhst)) {
                     /* float + float */
@@ -3344,7 +3337,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         }
 
     } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
 
         /* Left hand side is not constant. Get the value onto the stack. */
         LoadExpr (CF_NONE, Expr);               /* --> primary register */
@@ -3360,7 +3352,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
 
         /* Check for a constant rhs expression */
         if (ED_IsConstAbs (&Expr2) && ED_CodeRangeIsEmpty (&Expr2)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
 
             /* Rhs is a numeric constant. Remove pushed lhs from stack. */
             RemoveCode (&Mark);
@@ -3381,60 +3372,49 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Integer addition */
                 flags = typeadjust (Expr, &Expr2, 1);
             } else if (!DoArrayRef && IsClassFloat (lhst) && IsClassFloat (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 /* Float addition (float variable + float constant) */
                 /*flags = typeadjust (Expr, &Expr2, 1);*/
                 flags |= CF_FLOAT;
                 Expr->Type = Expr2.Type;
             } else if (!DoArrayRef && IsClassInt (lhst) && IsClassFloat (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 /* Float addition (int variable + float constant) */
                 /* adjust lhs */
                 flags = typeadjust (Expr, &Expr2, 1);
             } else if (!DoArrayRef && IsClassFloat (lhst) && IsClassInt (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 /* Float addition (float variable + int constant) */
                 flags |= CF_FLOAT;
             } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* OOPS */
                 AddDone = -1;
             }
 
             /* add rhs constant value */
             if (flags & CF_FLOAT) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 if (IsClassInt (rhst)) {
                     g_inc (flags | CF_CONST, FP_D_As32bitRaw(FP_D_FromInt(Expr2.IVal)));
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_inc (flags | CF_CONST, FP_D_As32bitRaw(Expr2.V.FVal));
                 }
             } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Generate code for the add */
                 g_inc (flags | CF_CONST, Expr2.IVal);
             }
 
         } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
 
             /* Lhs and rhs are not so "numeric constant". Check for pointer arithmetic. */
             if (IsClassPtr (lhst) && IsClassInt (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Left is pointer, right is int, must scale rhs */
                 rscale = CheckedPSizeOf (lhst);
                 if (ED_IsAbs (&Expr2)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     Expr2.IVal *= rscale;
                     /* Load rhs into the primary */
                     LoadExpr (CF_NONE, &Expr2);
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     /* Load rhs into the primary */
                     LoadExpr (CF_NONE, &Expr2);
                     g_scale (CF_INT, rscale);
@@ -3442,21 +3422,17 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Operate on pointers, result type is a pointer */
                 flags = CF_PTR;
             } else if (IsClassInt (lhst) && IsClassPtr (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Left is int, right is pointer, must scale lhs */
                 lscale = CheckedPSizeOf (rhst);
                 if (ED_CodeRangeIsEmpty (&Expr2)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     RemoveCode (&Mark);             /* Remove pushed value from stack */
                     g_scale (CF_INT, lscale);
                     g_push (CF_PTR, 0);             /* --> stack */
                     LoadExpr (CF_NONE, &Expr2);     /* Load rhs into primary register */
                 } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                     g_tosint (CG_TypeOf (lhst));    /* Make sure TOS is int */
                     LoadExpr (CF_NONE, &Expr2);     /* Load rhs into primary register */
                     if (lscale != 1) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                         g_swap (CF_INT);            /* Swap TOS and primary */
                         g_scale (CF_INT, CheckedPSizeOf (rhst));
                     }
@@ -3465,14 +3441,12 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 flags = CF_PTR;
                 Expr->Type = Expr2.Type;
             } else if (!DoArrayRef && IsClassInt (lhst) && IsClassInt (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Integer addition */
                 /* Load rhs into the primary */
                 LoadExpr (CF_NONE, &Expr2);
                 /* Adjust rhs primary if needed  */
                 flags = typeadjust (Expr, &Expr2, 0);
             } else if (!DoArrayRef && IsClassFloat (lhst) && IsClassFloat (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 /* Float addition */
                 /* flags = typeadjust (Expr, &Expr2, 0); */
@@ -3480,7 +3454,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Load rhs into the primary */
                 LoadExpr (CF_NONE, &Expr2);
             } else if (!DoArrayRef && IsClassFloat (lhst) && IsClassInt (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 /* Float addition (float + integer) */
                 /* Load rhs into the primary */
@@ -3488,7 +3461,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Adjust rhs primary if needed  */
                 flags = typeadjust (Expr, &Expr2, 0);
             } else if (!DoArrayRef && IsClassInt (lhst) && IsClassFloat (rhst)) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* FIXME: float - what to do here exactly? */
                 /* Float addition (integer + float) */
                 RemoveCode (&Mark);             /* Remove pushed value from stack */
@@ -3501,7 +3473,6 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* Adjust rhs primary if needed  */
                 flags = typeadjust (Expr, &Expr2, 0);
             } else {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
                 /* OOPS */
                 AddDone = -1;
                 /* We can't just goto End as that would leave the stack unbalanced */
@@ -3512,14 +3483,12 @@ fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
 
         }
 
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         /* Result is an rvalue in primary register */
         ED_FinalizeRValLoad (Expr);
     }
 
     /* Deal with array ref */
     if (DoArrayRef) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         /* Check the types of array and subscript */
         if (IsClassPtr (lhst)) {
             if (!IsClassInt (rhst))  {
@@ -3961,9 +3930,7 @@ void hie8 (ExprDesc* Expr)
 {
     ExprWithCheck (hie9, Expr);
     while (CurTok.Tok == TOK_PLUS || CurTok.Tok == TOK_MINUS) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
         if (CurTok.Tok == TOK_PLUS) {
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
             parseadd (Expr, 0);
         } else {
             parsesub (Expr);
@@ -4656,7 +4623,6 @@ void hie1 (ExprDesc* Expr)
             break;
 
         case TOK_PLUS_ASSIGN:
-fprintf(stderr, "%s:%d\n", __FILE__, __LINE__); // TODO FIX remove this line
             OpAddSubAssign (&GenPASGN, Expr, "+=");
             break;
 
