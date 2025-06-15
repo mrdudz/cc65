@@ -3879,18 +3879,18 @@ static void parsesub (ExprDesc* Expr)
             /* Adjust operand types */
             flags = typeadjust (Expr, &Expr2, 0);
         } else if (IsClassFloat (lhst) && IsClassFloat (rhst)) {
-            /* Float substraction */
+            /* Float subtraction */
             /* FIXME: float - what to do here exactly? */
             /* Adjust operand types */
             /*flags = typeadjust (Expr, &Expr2, 0);*/
             flags = CF_FLOAT;
         } else if (IsClassFloat (lhst) && IsClassInt (rhst)) {
-            /* Float substraction */
+            /* Float subtraction */
             /* FIXME: float - what to do here exactly? */
             /* Adjust operand types */
             flags = typeadjust (Expr, &Expr2, 0);
         } else if (IsClassInt (lhst) && IsClassFloat (rhst)) {
-            /* Float substraction */
+            /* Float subtraction */
             /* FIXME: float - what to do here exactly? */
             /* Remove pushed value from stack */
             RemoveCode (&Mark2);

@@ -70,7 +70,7 @@ void constintconst(void)
     printf("fp3:0x%08lx [0x400ccccd] %s (2.2)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     test1(fp3, "400ccccd");
 
-    // substraction
+    // subtraction
     printf("\nconstant - constant\n\n");
     fp1 = 0.1f;
     fp2 = 0.2f;

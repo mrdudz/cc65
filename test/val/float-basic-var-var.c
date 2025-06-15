@@ -71,7 +71,7 @@ void varvar(void)
     fp1 = 64.25f;
     fp2 = 16.5f;
     fp3 = fp1 - fp2;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, fp1), _ftostr(buf2, fp2), _ftostr(buf3, fp3));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, fp1), _ftostr(buf2, fp2), _ftostr(buf3, fp3));
     printf(" fp3:0x%08lx [0x423f0000] %s (exp:47.75)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     test1(fp3, "423f0000");
 
@@ -120,7 +120,7 @@ void varvar2(void)
     fp1 = 64.25f;
     fp2 = 16.5f;
     fp1 -= fp2;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, 64.25f), _ftostr(buf2, fp2), _ftostr(buf3, fp1));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, 64.25f), _ftostr(buf2, fp2), _ftostr(buf3, fp1));
     printf(" fp1:0x%08lx [0x423f0000] %s (exp:47.75)", *((uint32_t*)&fp1), _ftostr(buf, fp1));
     test1(fp1, "423f0000");
 

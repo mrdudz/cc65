@@ -67,7 +67,7 @@ void constvar(void)
 
     fp2 = 16.25f;
     fp3 =  8.5f - fp2;
-    printf("substraction: %s-%s=%s\n", _ftostr(buf, 8.5f), _ftostr(buf2, fp2), _ftostr(buf3, fp3));
+    printf("subtraction: %s-%s=%s\n", _ftostr(buf, 8.5f), _ftostr(buf2, fp2), _ftostr(buf3, fp3));
     printf(" fp3:0x%08lx [0xc0f80000] %s (-7.75)", *((uint32_t*)&fp3), _ftostr(buf, fp3));
     test1(fp3, "c0f80000");
 

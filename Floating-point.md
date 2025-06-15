@@ -247,7 +247,7 @@ samples will do this by default.
 This should become a freestanding IEEE754 library, which can completely replace
 the softfloat (and softmath) library.
 
-- basically everything missing except addition/substraction
+- basically everything missing except addition/subtraction
   - compare functions are missing
   - mul, div functions are missing
   - type conversion functions are missing
