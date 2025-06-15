@@ -678,13 +678,15 @@ void OpAddSubAssign (const GenDesc* Gen, ExprDesc *Expr, const char* Op)
     unsigned rflags;
     int      MustScale;
 
-    /* floats aren't involved in this other stuff, let's punt them to
-    ** OpAssign
+    /* floats aren't involved in pointer and array math, let's punt
+    ** them to OpAssign.  an alternate approach would be to do this
+    ** test before OpAddSubAssign is called in expr.c, but that is
+    ** slightly more code clutter.
     */
     if (IsTypeFloat (Expr->Type)) {
         OpAssign(Gen, Expr, Op);
         return;
-        /* TODO FIX: remove anything float related below */
+        /* TODO FIX: do we need to remove anything float related below ??? */
     }
 
     /* We currently only handle non-bit-fields in some addressing modes here */
